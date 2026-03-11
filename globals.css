@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #05080f;
+  --bg2: #080d18;
+  --surface: #0d1525;
+  --card: #101a2e;
+  --border: rgba(255, 255, 255, 0.07);
+  --border-bright: rgba(255, 255, 255, 0.15);
+  --cyan: #00d4ff;
+  --amber: #f59e0b;
+  --rose: #f43f5e;
+  --green: #10b981;
+  --muted: #64748b;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; background: var(--bg); }
+::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #334155; }
+
+/* Clerk overrides */
+.cl-formButtonPrimary {
+  background-color: var(--cyan) !important;
+  color: var(--bg) !important;
+  font-family: var(--font-syne) !important;
+  font-weight: 700 !important;
+}
+.cl-card {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+}
+.cl-headerTitle, .cl-socialButtonsBlockButtonText {
+  color: white !important;
+}

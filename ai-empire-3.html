@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OMNIMIND — AI Empire Blueprint</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,600&display=swap');
+
+  :root {
+    --void: #020408;
+    --deep: #060d14;
+    --surface: #0a1520;
+    --panel: #0f1e2d;
+    --border: #1a3048;
+    --accent: #00e5ff;
+    --hot: #ff3c6e;
+    --gold: #f5c842;
+    --green: #00ff9d;
+    --text: #c8dde8;
+    --muted: #4a7a90;
+    --glow: rgba(0,229,255,0.15);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--void);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* grid and scanline removed for iframe compat */
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ——— HERO ——— */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 0 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,229,255,0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 80% 80%, rgba(255,60,110,0.06) 0%, transparent 60%);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .status-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 40px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .hero-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(72px, 12vw, 140px);
+    line-height: 0.9;
+    letter-spacing: 2px;
+    color: #fff;
+    text-shadow: 0 0 60px rgba(0,229,255,0.3), 0 0 120px rgba(0,229,255,0.1);
+    margin-bottom: 8px;
+  }
+
+  .hero-title span { color: var(--accent); }
+
+  .hero-sub {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(28px, 5vw, 56px);
+    color: var(--muted);
+    letter-spacing: 4px;
+    margin-bottom: 32px;
+  }
+
+  .hero-desc {
+    max-width: 620px;
+    font-size: 17px;
+    color: var(--text);
+    line-height: 1.8;
+    margin-bottom: 48px;
+    border-left: 2px solid var(--accent);
+    padding-left: 20px;
+  }
+
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    max-width: 700px;
+    margin-bottom: 48px;
+  }
+
+  .stat {
+    background: var(--panel);
+    padding: 20px 24px;
+    text-align: center;
+  }
+
+  .stat-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: var(--accent);
+    line-height: 1;
+    display: block;
+  }
+
+  .stat-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+
+  .toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .toc-item {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    text-decoration: none;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .toc-item:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(0,229,255,0.05);
+  }
+
+  /* ——— SECTIONS ——— */
+  section {
+    padding: 80px 0;
+    border-top: 1px solid var(--border);
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+
+  .section-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 2px;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 5vw, 56px);
+    color: #fff;
+    letter-spacing: 2px;
+    line-height: 1;
+  }
+
+  .section-title span { color: var(--hot); }
+  .section-title em { color: var(--gold); font-style: normal; }
+  .section-title strong { color: var(--green); }
+
+  /* ——— CONCEPT CARD ——— */
+  .concept-hero {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 40px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .concept-hero::before {
+    display: none;
+  }
+
+  .concept-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 64px;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .concept-tagline {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .concept-pitch {
+    font-size: 18px;
+    line-height: 1.8;
+    color: var(--text);
+    max-width: 700px;
+  }
+
+  /* ——— FEATURE GRID ——— */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+
+  .feature-card {
+    background: var(--panel);
+    padding: 28px 32px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.2s;
+  }
+  .feature-card:hover { background: var(--surface); }
+
+  .feature-icon {
+    font-size: 28px;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .feature-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: #fff;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .feature-badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    padding: 3px 8px;
+    background: rgba(0,229,255,0.1);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: inline-block;
+    margin-bottom: 12px;
+  }
+  .feature-badge.hot { background: rgba(255,60,110,0.1); border-color: var(--hot); color: var(--hot); }
+  .feature-badge.gold { background: rgba(245,200,66,0.1); border-color: var(--gold); color: var(--gold); }
+  .feature-badge.green { background: rgba(0,255,157,0.1); border-color: var(--green); color: var(--green); }
+  .feature-desc { color: var(--text); font-size: 14px; line-height: 1.7; }
+
+  /* ——— CODE BLOCKS ——— */
+  .code-block {
+    background: #020a10;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    padding: 24px 28px;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    line-height: 1.8;
+    color: #7ec8e3;
+    overflow-x: auto;
+    margin: 16px 0;
+    white-space: pre-wrap;
+    word-break: break-all;
+    position: relative;
+  }
+  .code-block .kw { color: var(--hot); }
+  .code-block .fn { color: var(--accent); }
+  .code-block .str { color: var(--gold); }
+  .code-block .cm { color: var(--muted); font-style: italic; }
+  .code-block .num { color: var(--green); }
+  .code-block-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+
+  /* ——— STACK TABLE ——— */
+  .stack-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+  .stack-table th {
+    background: var(--surface);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--muted);
+    padding: 12px 20px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .stack-table td {
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(26,48,72,0.5);
+    font-size: 14px;
+    vertical-align: top;
+  }
+  .stack-table tr:last-child td { border-bottom: none; }
+  .stack-table tr:hover td { background: rgba(0,229,255,0.02); }
+  .stack-table td:first-child {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+  .stack-table td:nth-child(2) { color: var(--accent); font-weight: 600; }
+  .stack-table td:nth-child(3) { color: var(--text); }
+
+  /* ——— REVENUE ENGINE ——— */
+  .revenue-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .rev-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 28px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .rev-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  }
+  .rev-amount {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    color: var(--green);
+    line-height: 1;
+    display: block;
+  }
+  .rev-period {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+    display: block;
+  }
+  .rev-source {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* ——— ROADMAP ——— */
+  .roadmap {
+    position: relative;
+    padding-left: 40px;
+  }
+  .roadmap::before {
+    content: '';
+    position: absolute;
+    left: 12px;
+    top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(180deg, var(--accent), var(--hot), var(--gold), var(--green));
+  }
+
+  .roadmap-item {
+    position: relative;
+    margin-bottom: 40px;
+  }
+  .roadmap-item::before {
+    content: '';
+    position: absolute;
+    left: -34px;
+    top: 6px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+    border: 2px solid var(--void);
+  }
+
+  .roadmap-phase {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+  .roadmap-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    color: #fff;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+  .roadmap-tasks {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .roadmap-tasks li {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--text);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .roadmap-tasks li::before {
+    content: '→';
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  /* ——— VIRAL ENGINE ——— */
+  .viral-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .viral-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 24px;
+  }
+  .viral-tactic {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    color: var(--hot);
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .viral-detail {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* ——— LAUNCH CTA ——— */
+  .launch-block {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 56px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .launch-block::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(0,229,255,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .launch-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    color: #fff;
+    letter-spacing: 4px;
+    line-height: 1;
+    margin-bottom: 16px;
+    text-shadow: 0 0 40px rgba(0,229,255,0.4);
+  }
+  .launch-sub {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+
+  .btn-primary {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--void);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 3px;
+    padding: 16px 48px;
+    text-decoration: none;
+    margin: 8px;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+  }
+  .btn-primary:hover {
+    background: #fff;
+    box-shadow: 0 0 40px rgba(0,229,255,0.4);
+    transform: translateY(-2px);
+  }
+
+  .btn-secondary {
+    display: inline-block;
+    background: transparent;
+    color: var(--accent);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 3px;
+    padding: 16px 48px;
+    text-decoration: none;
+    margin: 8px;
+    border: 1px solid var(--accent);
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .btn-secondary:hover {
+    background: rgba(0,229,255,0.08);
+    transform: translateY(-2px);
+  }
+
+  /* ——— UTILS ——— */
+  .highlight { color: var(--accent); }
+  .highlight-hot { color: var(--hot); }
+  .highlight-gold { color: var(--gold); }
+  .highlight-green { color: var(--green); }
+
+  p { margin-bottom: 16px; }
+  p:last-child { margin-bottom: 0; }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  .info-box {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--gold);
+    padding: 20px 24px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+  .info-box-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px 0;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+  footer p {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; background: var(--void); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 0; }
+
+  @media (max-width: 768px) {
+    .feature-grid, .two-col, .revenue-grid, .viral-grid { grid-template-columns: 1fr; }
+    .hero-stats { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="container" style="position:relative;z-index:1">
+    <div class="status-bar">
+      <span class="status-dot"></span>
+      <span>Blueprint Active · March 2026 · Classified: Maximum Execution</span>
+    </div>
+    <p class="hero-eyebrow">// AI Empire · Full Stack Blueprint · Launch-Ready</p>
+    <h1 class="hero-title">OMNI<span>MIND</span></h1>
+    <p class="hero-sub">The World's First AI Operating System for Human Potential</p>
+    <p class="hero-desc">
+      A self-sustaining, AI-native SaaS platform that ingests a user's entire digital life and outputs a living, breathing second brain — generating content, deals, decisions, and income autonomously. Built in 7 days. Viral by design. Profitable from day one.
+    </p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-val">$0</span><span class="stat-label">Startup Cost</span></div>
+      <div class="stat"><span class="stat-val">7</span><span class="stat-label">Days to Launch</span></div>
+      <div class="stat"><span class="stat-val">4</span><span class="stat-label">Revenue Streams</span></div>
+      <div class="stat"><span class="stat-val">∞</span><span class="stat-label">Scale Ceiling</span></div>
+    </div>
+    <nav class="toc">
+      <a href="#concept" class="toc-item">01 Concept</a>
+      <a href="#features" class="toc-item">02 AI Features</a>
+      <a href="#stack" class="toc-item">03 Tech Stack</a>
+      <a href="#pseudocode" class="toc-item">04 Pseudo-code</a>
+      <a href="#revenue" class="toc-item">05 Revenue Engine</a>
+      <a href="#viral" class="toc-item">06 Virality</a>
+      <a href="#roadmap" class="toc-item">07 Launch Roadmap</a>
+    </nav>
+  </div>
+</section>
+
+<!-- 01 CONCEPT -->
+<section id="concept">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2 class="section-title">The <span>Concept</span></h2>
+    </div>
+
+    <div class="concept-hero">
+      <div class="concept-name">OMNIMIND</div>
+      <div class="concept-tagline">// Your AI doesn't assist you. It replaces the parts of you that hold you back.</div>
+      <p class="concept-pitch">
+        OmniMind is a <strong style="color:var(--accent)">hyper-personalized AI operating system</strong> that connects to every tool a knowledge worker uses — email, calendar, Notion, GitHub, Slack, Twitter, banking — and builds a real-time model of who they are, what they want, and what's stopping them. It then autonomously executes: scheduling, content creation, opportunity detection, deal-closing, code shipping, and wealth-building. The user sets goals. OmniMind does the rest.
+      </p>
+    </div>
+
+    <div class="two-col">
+      <div class="info-box">
+        <div class="info-box-title">🎯 Core Problem Being Solved</div>
+        Knowledge workers spend 73% of their time on low-leverage tasks: email, scheduling, status updates, content distribution, lead follow-up. OmniMind collapses this to near-zero, automating the execution layer entirely while the human focuses purely on vision and judgment.
+      </div>
+      <div class="info-box" style="border-left-color: var(--hot)">
+        <div class="info-box-title" style="color:var(--hot)">💎 Unfair Advantage</div>
+        Unlike Notion AI, Copilot, or Jasper — which are glorified autocomplete — OmniMind is <em style="color:var(--hot)">proactive, agentic, and financially motivated</em>. It doesn't wait to be asked. It acts. It learns. It earns. No competitor is in this category yet.
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="info-box" style="border-left-color: var(--green)">
+        <div class="info-box-title" style="color:var(--green)">👤 Target Users (Tier 1)</div>
+        Indie hackers, solopreneurs, content creators, startup founders, freelance developers. 400M+ globally. High willingness-to-pay. Already pay for 5–15 SaaS tools. OmniMind replaces all of them.
+      </div>
+      <div class="info-box" style="border-left-color: var(--accent)">
+        <div class="info-box-title">📈 Market</div>
+        $1.8T productivity software market, growing 14% YoY. The AI agent sub-sector is the fastest-growing wedge in all of software. This is the right product at the exact right moment in history.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 AI FEATURES -->
+<section id="features">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2 class="section-title">Revolutionary <span>AI Features</span></h2>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <span class="feature-icon">🧠</span>
+        <div class="feature-name">Living Second Brain</div>
+        <span class="feature-badge">Core Feature</span>
+        <p class="feature-desc">OmniMind ingests your emails, docs, notes, calendar, and browser history to build a persistent, evolving knowledge graph of your entire professional life. Ask it anything about your past, get instant context. It auto-tags, auto-links, and surfaces forgotten insights at exactly the right moment.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">⚡</span>
+        <div class="feature-name">Autonomous Agent Swarm</div>
+        <span class="feature-badge hot">Killer Feature</span>
+        <p class="feature-desc">Deploy a fleet of specialized sub-agents: Writer Agent (publishes content daily across all platforms), Sales Agent (monitors inbound leads and auto-responds), Finance Agent (tracks invoices, chases payments, spots tax savings), Code Agent (ships minor bug fixes overnight). They run 24/7 with no babysitting.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🎯</span>
+        <div class="feature-name">Opportunity Radar</div>
+        <span class="feature-badge gold">Viral Hook</span>
+        <p class="feature-desc">Real-time monitoring of Twitter, Reddit, HackerNews, Product Hunt, LinkedIn, and job boards. When OmniMind detects a perfectly-matched opportunity — client, partnership, investment, or job — it drafts the outreach, schedules the send, and tracks the response. You find out when a deal closes.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🔮</span>
+        <div class="feature-name">Predictive Life Modeling</div>
+        <span class="feature-badge green">Moat Builder</span>
+        <p class="feature-desc">Using your historical patterns and external market data, OmniMind generates 30/90/365-day forecasts: projected revenue, burnout risk scores, relationship drift alerts, and goal-achievement probability. It rewrites your weekly plan based on what it predicts will maximize your outcomes, not just your to-do list.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">✍️</span>
+        <div class="feature-name">Voice-Clone Content Engine</div>
+        <span class="feature-badge hot">Viral Feature</span>
+        <p class="feature-desc">After reading 3 months of your writing, OmniMind writes in your exact voice. It auto-generates LinkedIn posts, Twitter threads, newsletter issues, and blog articles that your audience can't distinguish from the real you. Pre-approve with one click, or let it autopilot entirely.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">💰</span>
+        <div class="feature-name">Revenue Autopilot</div>
+        <span class="feature-badge green">Money Feature</span>
+        <p class="feature-desc">Connects to Stripe, PayPal, Wise, and Gumroad. Automatically upsells existing customers, sends re-engagement campaigns to churned users, A/B tests your pricing page, and detects which content is converting to revenue — then makes more of it. Your MRR becomes a number that grows on its own.</p>
+      </div>
+    </div>
+
+    <div class="info-box" style="border-left-color: var(--accent)">
+      <div class="info-box-title">🔑 The Technical Secret Weapon</div>
+      OmniMind uses a <strong style="color:var(--accent)">Personalized Retrieval-Augmented Generation (P-RAG)</strong> architecture — a private vector database per user, continuously updated, with a custom fine-tuning loop that runs nightly. After 30 days of use, the model is so deeply personalized that switching costs become astronomical. This is how you create a moat, not a feature.
+    </div>
+  </div>
+</section>
+
+<!-- 03 TECH STACK -->
+<section id="stack">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2 class="section-title">Full <em>Tech Stack</em></h2>
+    </div>
+
+    <table class="stack-table">
+      <thead>
+        <tr>
+          <th>Layer</th>
+          <th>Technology</th>
+          <th>Why This Choice</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Frontend</td><td>Next.js 14 + TypeScript</td><td>App Router, RSC, instant SSR. Ships fast, SEO-friendly, scales to millions.</td></tr>
+        <tr><td>Styling</td><td>Tailwind CSS + shadcn/ui</td><td>Zero design system overhead. Ship in hours, looks pro instantly.</td></tr>
+        <tr><td>Auth</td><td>Clerk.dev</td><td>OAuth with Google/GitHub in 10 minutes. Built-in user management dashboard.</td></tr>
+        <tr><td>Database</td><td>Supabase (Postgres + pgvector)</td><td>Relational + vector search in one. Real-time subscriptions. Free tier is generous.</td></tr>
+        <tr><td>AI Core</td><td>Claude Sonnet (via Anthropic API)</td><td>Best-in-class reasoning for complex agentic tasks. 200K context for "life ingestion".</td></tr>
+        <tr><td>AI Embeddings</td><td>OpenAI text-embedding-3-large</td><td>Cheapest high-quality embeddings for the vector knowledge graph.</td></tr>
+        <tr><td>Agent Orchestration</td><td>LangGraph (Python) + FastAPI</td><td>Stateful multi-agent graphs with persistence. Perfect for the swarm architecture.</td></tr>
+        <tr><td>Background Jobs</td><td>Inngest</td><td>Durable, retry-safe background functions. Deploy agent runs as serverless jobs.</td></tr>
+        <tr><td>File/Data Ingestion</td><td>Unstructured.io + LlamaParse</td><td>Extracts clean text from any file format — PDF, DOCX, email, Notion export, etc.</td></tr>
+        <tr><td>Integrations</td><td>Nango (OAuth manager)</td><td>Manages OAuth tokens for 300+ integrations without building custom connectors.</td></tr>
+        <tr><td>Payments</td><td>Stripe</td><td>Subscriptions, usage-based billing, and the entire revenue automation layer.</td></tr>
+        <tr><td>Email</td><td>Resend + React Email</td><td>Developer-first transactional email. Beautiful templates in React. Actually deliverable.</td></tr>
+        <tr><td>Analytics</td><td>PostHog (self-hosted)</td><td>Full product analytics + feature flags + A/B testing for zero marginal cost.</td></tr>
+        <tr><td>Infra</td><td>Vercel (frontend) + Railway (backend)</td><td>Zero-DevOps deployment. Deploy from GitHub push. Auto-scaling. Cheap.</td></tr>
+        <tr><td>Monitoring</td><td>Sentry + BetterStack</td><td>Error tracking + uptime monitoring. Know before users complain.</td></tr>
+        <tr><td>AI Gateway</td><td>LiteLLM</td><td>Single API for all LLMs. Swap models in one line. Built-in cost tracking.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 04 PSEUDO-CODE -->
+<section id="pseudocode">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2 class="section-title">Core <strong>Pseudo-Code</strong></h2>
+    </div>
+
+    <p class="code-block-label">// 1. User Onboarding & Knowledge Ingestion Pipeline</p>
+    <div class="code-block"><span class="cm">// app/api/ingest/route.ts</span>
+<span class="kw">async function</span> <span class="fn">ingestUserUniverse</span>(userId: string) {
+  <span class="cm">// Step 1: Collect everything from connected integrations</span>
+  <span class="kw">const</span> sources = <span class="kw">await</span> <span class="fn">nango.getConnections</span>(userId)
+  <span class="kw">const</span> rawData = <span class="kw">await</span> <span class="fn">Promise.all</span>([
+    <span class="fn">fetchGmailLast90Days</span>(sources.google),
+    <span class="fn">fetchNotionWorkspace</span>(sources.notion),
+    <span class="fn">fetchGithubActivity</span>(sources.github),
+    <span class="fn">fetchCalendarEvents</span>(sources.google),
+    <span class="fn">fetchTwitterHistory</span>(sources.twitter),
+  ])
+  
+  <span class="cm">// Step 2: Parse + chunk all documents</span>
+  <span class="kw">const</span> chunks = <span class="kw">await</span> <span class="fn">unstructured.processAll</span>(rawData, {
+    chunkSize: <span class="num">512</span>,
+    chunkOverlap: <span class="num">64</span>,
+    extractMetadata: <span class="str">true</span>
+  })
+  
+  <span class="cm">// Step 3: Generate embeddings + store in pgvector</span>
+  <span class="kw">const</span> embeddings = <span class="kw">await</span> <span class="fn">openai.embeddings.create</span>({
+    model: <span class="str">"text-embedding-3-large"</span>,
+    input: chunks.map(c => c.text)
+  })
+  
+  <span class="kw">await</span> supabase.from(<span class="str">'knowledge_chunks'</span>).insert(
+    chunks.map((chunk, i) => ({
+      user_id: userId,
+      content: chunk.text,
+      embedding: embeddings[i],
+      source: chunk.metadata.source,
+      timestamp: chunk.metadata.date
+    }))
+  )
+  
+  <span class="cm">// Step 4: Build initial user profile via Claude analysis</span>
+  <span class="kw">const</span> profile = <span class="kw">await</span> <span class="fn">claude.analyze</span>({
+    prompt: <span class="str">`Analyze this person's digital footprint. Extract:
+    - Core professional identity & expertise
+    - Communication style & voice fingerprint  
+    - Active goals and projects
+    - Bottlenecks and pain points
+    - Network relationship graph
+    Return as structured JSON.`</span>,
+    context: chunks.slice(<span class="num">0</span>, <span class="num">200</span>) <span class="cm">// sample for speed</span>
+  })
+  
+  <span class="kw">await</span> supabase.from(<span class="str">'user_profiles'</span>).upsert({ userId, ...profile })
+}</div>
+
+    <p class="code-block-label">// 2. Autonomous Agent Swarm Orchestrator (LangGraph)</p>
+    <div class="code-block"><span class="cm"># agents/swarm.py</span>
+<span class="kw">from</span> langgraph.graph <span class="kw">import</span> StateGraph, END
+
+<span class="kw">class</span> <span class="fn">OmniMindSwarm</span>:
+  <span class="kw">def</span> <span class="fn">__init__</span>(self, user_id: str):
+    self.user_id = user_id
+    self.user_profile = <span class="fn">load_user_profile</span>(user_id)
+    self.graph = <span class="fn">self._build_swarm_graph</span>()
+    
+  <span class="kw">def</span> <span class="fn">_build_swarm_graph</span>(self) -> StateGraph:
+    graph = <span class="fn">StateGraph</span>(AgentState)
+    
+    <span class="cm"># Add specialized agents as nodes</span>
+    graph.<span class="fn">add_node</span>(<span class="str">"orchestrator"</span>, self.<span class="fn">orchestrator_agent</span>)
+    graph.<span class="fn">add_node</span>(<span class="str">"writer"</span>, self.<span class="fn">writer_agent</span>)
+    graph.<span class="fn">add_node</span>(<span class="str">"opportunity_scanner"</span>, self.<span class="fn">opportunity_scanner_agent</span>)
+    graph.<span class="fn">add_node</span>(<span class="str">"revenue_optimizer"</span>, self.<span class="fn">revenue_optimizer_agent</span>)
+    graph.<span class="fn">add_node</span>(<span class="str">"scheduler"</span>, self.<span class="fn">scheduler_agent</span>)
+    graph.<span class="fn">add_node</span>(<span class="str">"human_review"</span>, self.<span class="fn">request_human_review</span>)
+    
+    <span class="cm"># Conditional routing: high-stakes actions go to human review</span>
+    graph.<span class="fn">add_conditional_edges</span>(<span class="str">"orchestrator"</span>, self.<span class="fn">route_to_agent</span>, {
+      <span class="str">"write_content"</span>: <span class="str">"writer"</span>,
+      <span class="str">"find_opportunities"</span>: <span class="str">"opportunity_scanner"</span>,
+      <span class="str">"optimize_revenue"</span>: <span class="str">"revenue_optimizer"</span>,
+      <span class="str">"manage_calendar"</span>: <span class="str">"scheduler"</span>,
+      <span class="str">"needs_approval"</span>: <span class="str">"human_review"</span>
+    })
+    
+    <span class="kw">return</span> graph.<span class="fn">compile</span>(checkpointer=<span class="fn">PostgresSaver</span>(conn))
+  
+  <span class="kw">async def</span> <span class="fn">writer_agent</span>(self, state: AgentState):
+    <span class="cm"># Retrieve user's voice fingerprint from knowledge graph</span>
+    voice_samples = <span class="kw">await</span> <span class="fn">semantic_search</span>(
+      query=<span class="str">"writing samples blog posts tweets"</span>,
+      user_id=self.user_id,
+      top_k=<span class="num">20</span>
+    )
+    
+    <span class="cm"># Generate on-brand content for today's queue</span>
+    content = <span class="kw">await</span> claude.<span class="fn">generate</span>({
+      <span class="str">"system"</span>: <span class="fn">f</span><span class="str">"""You ARE {self.user_profile.name}. 
+        Write exactly as they write. Mirror their vocabulary, 
+        sentence rhythm, and opinions. Never break character."""</span>,
+      <span class="str">"prompt"</span>: <span class="fn">f</span><span class="str">"""Today's content brief: {state.content_brief}
+        Voice samples for calibration: {voice_samples}
+        Output: LinkedIn post + Twitter thread + Newsletter blurb"""</span>
+    })
+    
+    <span class="kw">return</span> {<span class="str">"draft_content"</span>: content, <span class="str">"requires_approval"</span>: <span class="kw">True</span>}
+
+  <span class="kw">async def</span> <span class="fn">opportunity_scanner_agent</span>(self, state: AgentState):
+    <span class="cm"># Monitor feeds for signal vs noise</span>
+    signals = <span class="kw">await</span> <span class="fn">scrape_opportunity_feeds</span>([
+      <span class="str">"twitter/search"</span>, <span class="str">"reddit/entrepreneur"</span>,
+      <span class="str">"hackernews/whoishiring"</span>, <span class="str">"producthunt/new"</span>
+    ])
+    
+    <span class="cm"># Score each signal against user's profile</span>
+    scored = <span class="kw">await</span> claude.<span class="fn">score_opportunities</span>(signals, self.user_profile)
+    top_5 = <span class="fn">filter</span>(<span class="kw">lambda</span> x: x.score > <span class="num">0.85</span>, scored)
+    
+    <span class="cm"># Auto-draft outreach for highest matches</span>
+    <span class="kw">for</span> opp <span class="kw">in</span> top_5:
+      draft = <span class="kw">await</span> claude.<span class="fn">draft_outreach</span>(opp, self.user_profile)
+      <span class="kw">await</span> <span class="fn">queue_for_approval</span>(draft, urgency=opp.expires_in_hours)
+</div>
+
+    <p class="code-block-label">// 3. Predictive Revenue Engine</p>
+    <div class="code-block"><span class="cm">// lib/revenue-engine.ts</span>
+<span class="kw">export async function</span> <span class="fn">runRevenueAutopilot</span>(userId: string) {
+  <span class="kw">const</span> stripeData = <span class="kw">await</span> <span class="fn">getStripeMetrics</span>(userId)
+  <span class="kw">const</span> emailData = <span class="kw">await</span> <span class="fn">getEmailEngagement</span>(userId)
+  <span class="kw">const</span> userContext = <span class="kw">await</span> <span class="fn">getUserKnowledgeGraph</span>(userId)
+  
+  <span class="cm">// Detect churn signals 14 days before they happen</span>
+  <span class="kw">const</span> churnRisks = <span class="kw">await</span> claude.<span class="fn">message</span>({
+    content: <span class="str">`Analyze these customer engagement patterns: ${emailData.recentEngagement}
+    Payment history: ${stripeData.last6Months}
+    Identify customers at >70% churn risk in next 14 days.
+    For each, draft a personalized win-back offer. Return JSON.`</span>
+  })
+  
+  <span class="cm">// Auto-execute win-back campaigns (low stakes = auto; high stakes = review)</span>
+  <span class="kw">for</span> (<span class="kw">const</span> customer <span class="kw">of</span> churnRisks.highRisk) {
+    <span class="kw">if</span> (customer.ltv < <span class="num">500</span>) {
+      <span class="kw">await</span> <span class="fn">sendAutomatedEmail</span>(customer.winBackDraft) <span class="cm">// auto-fire</span>
+    } <span class="kw">else</span> {
+      <span class="kw">await</span> <span class="fn">createApprovalTask</span>(customer, <span class="str">"high-value churn risk"</span>) <span class="cm">// needs human</span>
+    }
+  }
+  
+  <span class="cm">// Dynamic pricing optimization via A/B test</span>
+  <span class="kw">const</span> priceTest = <span class="kw">await</span> <span class="fn">launchPriceExperiment</span>({
+    variants: [<span class="num">29</span>, <span class="num">39</span>, <span class="num">49</span>],
+    metric: <span class="str">"30_day_retention"</span>,
+    trafficSplit: [<span class="num">0.33</span>, <span class="num">0.33</span>, <span class="num">0.34</span>]
+  })
+  
+  <span class="cm">// Upsell detection: find free-to-paid upgrade moments</span>
+  <span class="kw">const</span> upgradeTargets = stripeData.freeUsers
+    .<span class="fn">filter</span>(u => u.actionsThisWeek > <span class="num">20</span>) <span class="cm">// power users on free tier</span>
+    .<span class="fn">filter</span>(u => u.daysSinceSignup > <span class="num">7</span>)    <span class="cm">// not brand new</span>
+  
+  <span class="kw">await</span> <span class="fn">triggerInAppUpsellFlow</span>(upgradeTargets)
+  
+  <span class="kw">return</span> { churnRisks, priceTest, upgradeTargets: upgradeTargets.length }
+}</div>
+
+    <p class="code-block-label">// 4. Viral Sharing Hook — "Proof of Intelligence" Card</p>
+    <div class="code-block"><span class="cm">// components/ShareCard.tsx — The feature that makes people post about you</span>
+<span class="kw">export function</span> <span class="fn">generateShareCard</span>(userId: string) {
+  <span class="cm">// Pulls weekly AI activity stats into a shareable visual</span>
+  <span class="kw">const</span> stats = <span class="kw">await</span> <span class="fn">getWeeklyAgentActivity</span>(userId)
+  
+  <span class="cm">// Rendered as an OG image via @vercel/og</span>
+  <span class="kw">return</span> <span class="fn">ImageResponse</span>(
+    &lt;div style={{background: <span class="str">'#020408'</span>, padding: <span class="str">'60px'</span>}}&gt;
+      &lt;h1&gt;My AI worked while I slept 🤖&lt;/h1&gt;
+      &lt;p&gt;{stats.emailsHandled} emails handled&lt;/p&gt;
+      &lt;p&gt;{stats.contentPublished} posts published&lt;/p&gt;
+      &lt;p&gt;{stats.dealsProgressed} deals moved forward&lt;/p&gt;
+      &lt;p&gt;{stats.hoursFreed}hrs freed. Revenue: +${stats.revenueAttributed}&lt;/p&gt;
+      &lt;span&gt;omnimind.ai — try it free&lt;/span&gt;
+    &lt;/div&gt;
+  )
+  <span class="cm">// Users share this card → they become your best salespeople</span>
+}</div>
+  </div>
+</section>
+
+<!-- 05 REVENUE ENGINE -->
+<section id="revenue">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2 class="section-title">Automated <em>Revenue Engine</em></h2>
+    </div>
+
+    <div class="revenue-grid">
+      <div class="rev-card">
+        <span class="rev-amount">$49</span>
+        <span class="rev-period">/ month · Tier 1</span>
+        <div class="rev-source"><strong style="color:#fff">Solo Plan</strong><br>Full second brain + 3 agents + 5 integrations. Target: indie hackers, freelancers. Projected: 2,000 users by month 3 = <strong style="color:var(--green)">$98K MRR</strong></div>
+      </div>
+      <div class="rev-card">
+        <span class="rev-amount">$149</span>
+        <span class="rev-period">/ month · Tier 2</span>
+        <div class="rev-source"><strong style="color:#fff">Operator Plan</strong><br>Unlimited agents + all integrations + revenue autopilot. Target: founders, creators with revenue. 500 users = <strong style="color:var(--green)">$74.5K MRR</strong></div>
+      </div>
+      <div class="rev-card">
+        <span class="rev-amount">$499</span>
+        <span class="rev-period">/ month · Tier 3</span>
+        <div class="rev-source"><strong style="color:#fff">Empire Plan</strong><br>White-label + team seats + custom agent training + API access. Target: agencies, teams. 100 clients = <strong style="color:var(--green)">$49.9K MRR</strong></div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="info-box" style="border-left-color: var(--gold)">
+        <div class="info-box-title">💸 Revenue Stream 2: Usage-Based Overage</div>
+        Each plan includes a compute credits allowance. Heavy AI usage (large ingestion jobs, intensive agent runs) bills at $0.10/credit. This aligns pricing with value and creates a natural usage flywheel. Projected 15–25% revenue uplift on top of subscription.
+      </div>
+      <div class="info-box" style="border-left-color: var(--hot)">
+        <div class="info-box-title">🤝 Revenue Stream 3: Affiliate & Referral Network</div>
+        OmniMind's Opportunity Scanner identifies high-intent moments to recommend tools (Notion, Linear, ConvertKit). Affiliate commissions from 30+ SaaS tools. Fully automated via the agent. No sales team needed. Projected $5–15K/month passive by month 6.
+      </div>
+    </div>
+
+    <div class="info-box" style="border-left-color: var(--green)">
+      <div class="info-box-title">🏪 Revenue Stream 4: Agent Marketplace</div>
+      Open a marketplace where power users can publish custom agents (e.g., "Real Estate Deal Finder Agent", "Podcast Guest Booking Agent"). OmniMind takes 30% of all marketplace sales. Creates a self-sustaining ecosystem that generates revenue and builds product depth with zero engineering effort. Launch month 4.
+    </div>
+  </div>
+</section>
+
+<!-- 06 VIRAL STRATEGY -->
+<section id="viral">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <h2 class="section-title">Virality <span>Strategy</span></h2>
+    </div>
+
+    <div class="viral-grid">
+      <div class="viral-card">
+        <div class="viral-tactic">Weekly AI Recap Card</div>
+        <p class="viral-detail">Every Monday, users get a beautiful visual recap: "Your AI did this for you this week." Shareable to Twitter/LinkedIn in one click. Each share includes your referral link. Users brag about how much their AI did. You get free acquisition.</p>
+      </div>
+      <div class="viral-card">
+        <div class="viral-tactic">Public "Life Dashboard"</div>
+        <p class="viral-detail">Optional public profile: "See how [Name]'s AI is running their business." Shows live agent stats, content published, deals closed. Founders will share this like Stripe revenue dashboards — as a status symbol and proof of scale.</p>
+      </div>
+      <div class="viral-card">
+        <div class="viral-tactic">AI vs Human Challenge</div>
+        <p class="viral-detail">Launch campaign: "Can you spot the AI?" Post 10 content pieces to LinkedIn, half written by you, half by OmniMind. Let the audience vote. The content quality is indistinguishable. This goes viral every single time it runs.</p>
+      </div>
+      <div class="viral-card">
+        <div class="viral-tactic">Founder "Day in the Life" Series</div>
+        <p class="viral-detail">Partner with 10 micro-influencer founders. They document a week using OmniMind. Their authentic "this thing handles my emails" videos generate 10–50x more trust than any ad. Seed with free Operator accounts.</p>
+      </div>
+      <div class="viral-card">
+        <div class="viral-tactic">Product Hunt Launch</div>
+        <p class="viral-detail">Target #1 Product of the Day. Build the PH launch inside OmniMind itself — let the agent coordinate the community upvote campaign, draft all PH copy, and schedule the launch. Meta-proof of product. Guaranteed press coverage.</p>
+      </div>
+      <div class="viral-card">
+        <div class="viral-tactic">Referral Engine: "Clone Your Brain"</div>
+        <p class="viral-detail">Refer 3 friends → unlock "Brain Clone" feature (share your agent setup with a friend). Creates network effects. Each referral earns 30 days free for both parties. 3-sided referral loops. Viral coefficient target: K > 1.2.</p>
+      </div>
+    </div>
+
+    <div class="info-box" style="border-left-color: var(--accent)">
+      <div class="info-box-title">📣 Distribution Sequencing (Week-by-Week)</div>
+      <strong>Week 1:</strong> Soft launch to 200 waitlist leads. Collect testimonials and fix critical bugs. <br>
+      <strong>Week 2:</strong> Product Hunt launch + Hacker News "Show HN" post + Twitter thread from founder. Target 500 signups. <br>
+      <strong>Week 3:</strong> YouTube SEO content ("I let AI run my business for 7 days") + micro-influencer activations. <br>
+      <strong>Week 4:</strong> First "AI Recap Card" campaign. Users share. Referral flywheel activates. Press pitches go out (TechCrunch, The Hustle, IndieHackers).
+    </div>
+  </div>
+</section>
+
+<!-- 07 ROADMAP -->
+<section id="roadmap">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <h2 class="section-title">7-Day <em>Launch Roadmap</em></h2>
+    </div>
+
+    <div class="roadmap">
+      <div class="roadmap-item">
+        <div class="roadmap-phase">Day 1 — Foundation</div>
+        <div class="roadmap-title">INFRASTRUCTURE ZERO</div>
+        <ul class="roadmap-tasks">
+          <li>Create Vercel project, Railway backend, Supabase DB. All free tiers. Total cost: $0.</li>
+          <li>Initialize Next.js 14 repo with TypeScript, Tailwind, shadcn/ui. Deploy skeleton in 2 hours.</li>
+          <li>Configure Clerk auth. Add Google OAuth. Test sign-up flow.</li>
+          <li>Set up Stripe account. Create 3 subscription products ($49, $149, $499). Enable free trial.</li>
+          <li>Configure pgvector extension in Supabase. Create knowledge_chunks + user_profiles tables.</li>
+          <li>Register omnimind.ai domain. Point to Vercel. Add SSL. Build waitlist landing page with Resend capture.</li>
+        </ul>
+      </div>
+
+      <div class="roadmap-item">
+        <div class="roadmap-phase">Day 2 — AI Core</div>
+        <div class="roadmap-title">BRAIN COMES ALIVE</div>
+        <ul class="roadmap-tasks">
+          <li>Build ingestion pipeline: file upload → Unstructured → chunks → OpenAI embeddings → pgvector. Test with 3 documents.</li>
+          <li>Build semantic search function. Wire to Claude API with RAG prompt. Test Q&A against ingested docs.</li>
+          <li>Set up Nango. Connect Google (Gmail + Calendar). Test OAuth flow for 3 users.</li>
+          <li>Build user profile extraction prompt. Run Claude on ingested data. Store structured profile in Supabase.</li>
+          <li>Create /api/chat endpoint with streaming. Add conversation history management.</li>
+        </ul>
+      </div>
+
+      <div class="roadmap-item">
+        <div class="roadmap-phase">Day 3 — Agent Swarm</div>
+        <div class="roadmap-title">THE MACHINES WAKE UP</div>
+        <ul class="roadmap-tasks">
+          <li>Install LangGraph. Build AgentState schema. Build Orchestrator node with Claude routing logic.</li>
+          <li>Build Writer Agent: voice extraction → content brief → draft → approval queue flow.</li>
+          <li>Build Opportunity Scanner: RSS/Twitter feed polling → Claude scoring → draft outreach.</li>
+          <li>Set up Inngest. Create nightly cron job that runs each user's agent swarm.</li>
+          <li>Build approval inbox UI: users see pending agent actions, approve/reject with one click.</li>
+        </ul>
+      </div>
+
+      <div class="roadmap-item">
+        <div class="roadmap-phase">Day 4 — Revenue & Dashboard</div>
+        <div class="roadmap-title">THE MONEY MACHINE</div>
+        <ul class="roadmap-tasks">
+          <li>Build main dashboard: knowledge graph viz, agent activity feed, upcoming actions, stats.</li>
+          <li>Wire Stripe webhooks. Handle subscription events. Enforce plan limits in middleware.</li>
+          <li>Build Revenue Autopilot agent: Stripe data ingestion → churn detection → win-back draft.</li>
+          <li>Build billing portal page. Add plan upgrade UI with Stripe Payment Links.</li>
+          <li>Create shareable "Weekly AI Recap" card using @vercel/og with user stats.</li>
+        </ul>
+      </div>
+
+      <div class="roadmap-item">
+        <div class="roadmap-phase">Day 5 — Polish & Onboarding</div>
+        <div class="roadmap-title">FIRST IMPRESSION WEAPONIZED</div>
+        <ul class="roadmap-tasks">
+          <li>Build onboarding wizard: connect integrations → ingest data → set first 3 goals → activate agents.</li>
+          <li>Add empty states, loading skeletons, and helpful tooltips throughout the app.</li>
+          <li>Set up PostHog. Instrument 20 key events. Build funnel analysis for onboarding.</li>
+          <li>Configure Sentry error tracking. Add BetterStack uptime monitoring with Slack alerts.</li>
+          <li>Write and send first drip email sequence via Resend: welcome, day 3 activation, day 7 upgrade nudge.</li>
+        </ul>
+      </div>
+
+      <div class="roadmap-item">
+        <div class="roadmap-phase">Day 6 — Marketing Asset Blitz</div>
+        <div class="roadmap-title">LAUNCH ARTILLERY LOADED</div>
+        <ul class="roadmap-tasks">
+          <li>Record 90-second Loom demo video. Show ingestion → chat → agent firing → recap card. No editing needed.</li>
+          <li>Write Product Hunt listing copy (tagline, description, first comment). Schedule for Day 7.</li>
+          <li>Write "Show HN" post for Hacker News. Focus on technical architecture, not hype.</li>
+          <li>Write founder's Twitter thread: "I built a self-running AI OS for my business in 6 days. Here's how."</li>
+          <li>DM 50 IH + Twitter founder accounts. Offer free Operator tier in exchange for honest feedback.</li>
+          <li>Set up referral tracking with Rewardful. Integrate with Clerk user IDs.</li>
+        </ul>
+      </div>
+
+      <div class="roadmap-item">
+        <div class="roadmap-phase">Day 7 — LAUNCH DAY</div>
+        <div class="roadmap-title">EVERYTHING GOES LIVE</div>
+        <ul class="roadmap-tasks">
+          <li>6:00 AM: Submit to Product Hunt. Share with waitlist (email + Resend). Fire Twitter thread.</li>
+          <li>8:00 AM: Post "Show HN". Reply to every comment personally, all day.</li>
+          <li>10:00 AM: Post founder story on IndieHackers. Link to PH.</li>
+          <li>2:00 PM: LinkedIn post with AI Recap Card visual. Tag micro-influencer partners.</li>
+          <li>5:00 PM: Monitor Stripe dashboard. First paying customers. Screenshot and tweet it.</li>
+          <li>10:00 PM: Write Day 1 post-mortem. Publish transparently. This is your next viral content piece.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LAUNCH CTA -->
+<section style="border-top: 1px solid var(--border); padding: 80px 0;">
+  <div class="container">
+    <div class="launch-block">
+      <div class="launch-title">BUILD IT.<br>SHIP IT.<br>OWN IT.</div>
+      <p class="launch-sub">Every line of this blueprint is executable today, with AI tools, alone.</p>
+      <p style="max-width:600px; margin: 0 auto 32px; color:var(--text); font-size:16px; line-height:1.8;">
+        The stack costs ~$0/month until you hit real scale. Claude writes the code. Cursor refines it. GitHub stores it. Vercel ships it. You own a category-defining product in 7 days. The only variable is whether you execute.
+      </p>
+      <div>
+        <a class="btn-primary" href="#concept">Read Blueprint Again</a>
+        <a class="btn-secondary" href="#roadmap">Start Day 1 Now</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>OMNIMIND · AI EMPIRE BLUEPRINT · CLASSIFIED: MAXIMUM EXECUTION · 2026</p>
+    <p style="margin-top:8px; color:rgba(74,122,144,0.5)">Built with Claude · Designed for founders who execute · Zero fluff guaranteed</p>
+  </div>
+</footer>
+
+<script>
+  // Glitch effect on hero title
+  const title = document.querySelector('.hero-title')
+  if (title) {
+    setInterval(() => {
+      if (Math.random() > 0.97) {
+        title.style.textShadow = '2px 0 var(--hot), -2px 0 var(--accent), 0 0 60px rgba(0,229,255,0.3)'
+        setTimeout(() => {
+          title.style.textShadow = '0 0 60px rgba(0,229,255,0.3), 0 0 120px rgba(0,229,255,0.1)'
+        }, 80)
+      }
+    }, 200)
+  }
+</script>
+</body>
+</html>
